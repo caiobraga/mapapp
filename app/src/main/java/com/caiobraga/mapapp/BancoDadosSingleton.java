@@ -1,5 +1,7 @@
 package com.caiobraga.mapapp;
 
+import static com.caiobraga.mapapp.MainActivity.getAppContext;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -19,28 +21,21 @@ public class BancoDadosSingleton {
 
         };
 
-        private BancoDadosSingleton() {
-            //Obtem contexto da aplicação usando a classe criada para essa finalidade
-            Context ctx = MainActivity.getAppContext();
-            // Abre o banco de dados já existente ou então cria um banco novo
-            db = ctx.openOrCreateDatabase(NOME_BANCO, Context.MODE_PRIVATE, null);
-            //busca por tabelas existentes no banco igual "show tables" do MySQL
-            //SELECT * FROM sqlite_master WHERE type = "table"
-            Cursor c = buscar("sqlite_master", null, "type = 'table'", "");
-            //Cria tabelas do banco de dados caso o mesmo estiver vazio.
-            //bancos criados pelo método openOrCreateDatabase() POSSUEM UMA TABELA
-            //PADRÃO "android_metadata"
-            if(c.getCount() == 1){
-                for(int i = 0; i < SCRIPT_DATABASE_CREATE.length; i++){
-                    db.execSQL(SCRIPT_DATABASE_CREATE[i]);
-                }
-                Log.i("BANCO_DADOS", "Criou tabelas do banco e as populou.");
+    private BancoDadosSingleton(Context ctx) {
+        db = ctx.openOrCreateDatabase(NOME_BANCO, Context.MODE_PRIVATE, null);
+        Cursor c = buscar("sqlite_master", null, "type = 'table'", "");
+        if(c.getCount() == 1){
+            for(int i = 0; i < SCRIPT_DATABASE_CREATE.length; i++){
+                db.execSQL(SCRIPT_DATABASE_CREATE[i]);
             }
-            c.close();
-            Log.i("BANCO_DADOS", "Abriu conexão com o banco.");
+            Log.i("BANCO_DADOS", "Criou tabelas do banco e as populou.");
         }
+        c.close();
+        Log.i("BANCO_DADOS", "Abriu conexão com o banco.");
+    }
 
-        // Insere um novo registro
+
+    // Insere um novo registro
         public long inserir(String tabela, ContentValues valores) {
             long id = db.insert(tabela, null, valores);
             Log.i("BANCO_DADOS", "Cadastrou registro com o id [" + id + "]");
@@ -70,7 +65,7 @@ public class BancoDadosSingleton {
         }
         // Abre conexão com o banco
         private void abrir() {
-            Context ctx = MainActivity.getAppContext();
+            Context ctx = getAppContext();
             if(!db.isOpen()){
                 // Abre o banco de dados já existente
                 db = ctx.openOrCreateDatabase(NOME_BANCO, Context.MODE_PRIVATE, null);
@@ -82,7 +77,7 @@ public class BancoDadosSingleton {
 
         public static BancoDadosSingleton getInstance(){
             if(INSTANCE == null)
-                INSTANCE = new BancoDadosSingleton();
+                INSTANCE = new BancoDadosSingleton(getAppContext());
             INSTANCE.abrir(); //abre conexão se estiver fechada
             return INSTANCE;
         }
