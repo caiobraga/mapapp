@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Mapactivity">
+    <LinearLayout
+        android:id="@+id/buttonslayout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+    <Button
+        android:id="@+id/myButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Colatina"
+        android:tag="Colatina"
+        android:onClick="selectCidade"
+        />
+    <Button
+        android:id="@+id/myButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Viçosa"
+        android:tag="viçosa"
+        android:layout_toRightOf="@id/myButton"
+        android:layout_marginLeft="16dp"
+        android:onClick="selectCidade"
+        />
+    <Button
+        android:id="@+id/myButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DPI"
+        android:tag="DPI"
+        android:layout_toRightOf="@id/myButton2"
+        android:layout_marginLeft="16dp"
+        android:onClick="selectCidade"
+        />
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/buttonslayout"
+        />
+
+</RelativeLayout>
